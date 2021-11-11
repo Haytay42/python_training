@@ -1,6 +1,6 @@
-class AddressBook:
+class Contact:
 
-    def __init__(self, firstname, middlename, lastname, nickname, photo, title, company, address, home, mobile, work, fax, email, email2, email3, homepage, bday, bmonth, byear, aday, amonth, ayear, address2, phone2, notes):
+    def __init__(self, firstname, middlename, lastname, nickname, photo, title, company, address, home_telephone, mobile_telephone, work_telephone, fax_telephone, email, email2, email3, homepage, bday, bmonth, byear, aday, amonth, ayear, address2, phone2, notes):
         self.firstname = firstname
         self.middlename = middlename
         self.lastname = lastname
@@ -9,10 +9,10 @@ class AddressBook:
         self.title = title
         self.company = company
         self.address = address
-        self.home = home
-        self.mobile = mobile
-        self.work = work
-        self.fax = fax
+        self.home_telephone = home_telephone
+        self.mobile_telephone = mobile_telephone
+        self.work_telephone = work_telephone
+        self.fax_telephone = fax_telephone
         self.email = email
         self.email2 = email2
         self.email3 = email3
