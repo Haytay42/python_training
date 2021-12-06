@@ -1,6 +1,7 @@
 from selenium.webdriver.support.select import Select
 
 from model.contact import Contact
+import re
 
 
 class ContactHelper:
@@ -63,7 +64,7 @@ class ContactHelper:
         Select(wd.find_element_by_name("amonth")).select_by_visible_text(contact.amonth)
         self.change_field_value("ayear", contact.ayear)
         self.change_field_value("address2", contact.address2)
-        self.change_field_value("phone2", contact.phone2)
+        self.change_field_value("phone2", contact.secondary_phone)
         self.change_field_value("notes", contact.notes)
 
     def create(self, new_contact_data):
@@ -94,7 +95,6 @@ class ContactHelper:
 
     def modify_contact_by_index(self, index, contact):
         wd = self.app.wd
-        self.open_contact_page()
         self.select_contact_by_index_to_edit(index)
         self.fill_contact(contact)
         # submit contact edit
@@ -103,6 +103,7 @@ class ContactHelper:
         self.contact_cache = None
 
     def select_contact_by_index_to_edit(self, index):
+        self.open_contact_page()
         wd = self.app.wd
         wd.find_elements_by_xpath("(//img[@alt='Edit'])")[index].click()
 
@@ -118,16 +119,50 @@ class ContactHelper:
             wd = self.app.wd
             self.open_contact_page()
             self.contact_cache = []
-            firstname = None
-            lastname = None
             for contact in wd.find_elements_by_name("entry"):
                 cells = contact.find_elements_by_tag_name("td")
                 id = cells[0].find_element_by_name("selected[]").get_attribute("value")
-                if cells[1]:
-                    lastname = cells[1].text
-                if cells[2]:
-                    firstname = cells[2].text
-                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id))
+                lastname = cells[1].text
+                firstname = cells[2].text
+                all_phones = cells[5].text.splitlines()
+                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id,
+                                                  home_telephone=all_phones[0], mobile_telephone=all_phones[1],
+                                                  work_telephone=all_phones[2], secondary_phone=all_phones[3]))
         return list(self.contact_cache)
+
+    def open_contact_view_by_index(self, index):
+        wd = self.app.wd
+        self.app.open_home_page()
+        row = wd.find_elements_by_name("entry")[index]
+        cell = row.find_elements_by_tag_name("td")[6]
+        cell.find_element_by_tag_name("a").click()
+
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.select_contact_by_index_to_edit(index)
+        firstname = wd.find_element_by_name("firstname").get_attribute("value")
+        lastname = wd.find_element_by_name("lastname").get_attribute("value")
+        id = wd.find_element_by_name("id").get_attribute("value")
+        home_telephone = wd.find_element_by_name("home").get_attribute("value")
+        mobile_telephone = wd.find_element_by_name("mobile").get_attribute("value")
+        work_telephone = wd.find_element_by_name("work").get_attribute("value")
+        secondary_phone = wd.find_element_by_name("phone2").get_attribute("value")
+        return Contact(firstname=firstname, lastname=lastname, id=id,
+                       home_telephone=home_telephone, mobile_telephone=mobile_telephone,
+                       work_telephone=work_telephone, secondary_phone=secondary_phone)
+
+    def get_contact_from_view_page(self, index):
+        wd = self.app.wd
+        self.open_contact_view_by_index(index)
+        text = wd.find_element_by_id("content").text
+        home_telephone = re.search("H: (.*)", text).group(1)
+        mobile_telephone = re.search("M: (.*)", text).group(1)
+        work_telephone = re.search("W: (.*)", text).group(1)
+        secondary_phone = re.search("P: (.*)", text).group(1)
+        return Contact(home_telephone=home_telephone, mobile_telephone=mobile_telephone,
+                       work_telephone=work_telephone, secondary_phone=secondary_phone)
+
+
+
 
 
