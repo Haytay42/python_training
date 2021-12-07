@@ -124,10 +124,11 @@ class ContactHelper:
                 id = cells[0].find_element_by_name("selected[]").get_attribute("value")
                 lastname = cells[1].text
                 firstname = cells[2].text
-                all_phones = cells[5].text.splitlines()
-                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id,
-                                                  home_telephone=all_phones[0], mobile_telephone=all_phones[1],
-                                                  work_telephone=all_phones[2], secondary_phone=all_phones[3]))
+                address = cells[3].text
+                all_emails = cells[4].text
+                all_phones = cells[5].text
+                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, address=address, id=id,
+                                                  all_emails_from_home_page=all_emails, all_phones_from_home_page=all_phones))
         return list(self.contact_cache)
 
     def open_contact_view_by_index(self, index):
@@ -143,11 +144,16 @@ class ContactHelper:
         firstname = wd.find_element_by_name("firstname").get_attribute("value")
         lastname = wd.find_element_by_name("lastname").get_attribute("value")
         id = wd.find_element_by_name("id").get_attribute("value")
+        address = wd.find_element_by_name("address").get_attribute("value")
+        email = wd.find_element_by_name("email").get_attribute("value")
+        email2 = wd.find_element_by_name("email2").get_attribute("value")
+        email3 = wd.find_element_by_name("email3").get_attribute("value")
         home_telephone = wd.find_element_by_name("home").get_attribute("value")
         mobile_telephone = wd.find_element_by_name("mobile").get_attribute("value")
         work_telephone = wd.find_element_by_name("work").get_attribute("value")
         secondary_phone = wd.find_element_by_name("phone2").get_attribute("value")
-        return Contact(firstname=firstname, lastname=lastname, id=id,
+        return Contact(firstname=firstname, lastname=lastname, id=id, address=address,
+                       email=email, email2=email2, email3=email3,
                        home_telephone=home_telephone, mobile_telephone=mobile_telephone,
                        work_telephone=work_telephone, secondary_phone=secondary_phone)
 
