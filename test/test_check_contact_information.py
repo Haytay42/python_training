@@ -1,18 +1,21 @@
 import re
 from random import randrange
 
+from model.contact import Contact
 
-def test_check_random_contact_information(app):
-    old_contacts = app.contact.get_contact_list()
-    index = randrange(len(old_contacts))
-    contact_information_from_home_page = app.contact.get_contact_list()[index]
-    contact_information_from_edit_page = app.contact.get_contact_info_from_edit_page(index)
-    assert contact_information_from_home_page.firstname == contact_information_from_edit_page.firstname
-    assert contact_information_from_home_page.lastname == contact_information_from_edit_page.lastname
-    assert contact_information_from_home_page.address == contact_information_from_edit_page.address
-    assert contact_information_from_home_page.all_phones_from_home_page == merge_phones_like_on_home_page(contact_information_from_edit_page)
-    assert contact_information_from_home_page.all_emails_from_home_page == merge_emails_like_on_home_page(
-        contact_information_from_edit_page)
+
+def test_check_contact_information(app, db):
+    old_contacts = db.get_contact_list()
+    contact_information_from_home_page = sorted(app.contact.get_contact_list(), key=Contact.id_or_max)
+    contact_information_from_edit_page = sorted(db.get_contact_list(), key=Contact.id_or_max)
+    assert contact_information_from_home_page == contact_information_from_edit_page
+    for i in range(len(old_contacts)):
+        assert contact_information_from_home_page[i].firstname == contact_information_from_edit_page[i].firstname
+        assert contact_information_from_home_page[i].lastname == contact_information_from_edit_page[i].lastname
+        assert contact_information_from_home_page[i].address == contact_information_from_edit_page[i].address
+        assert contact_information_from_home_page[i].all_phones_from_home_page == merge_phones_like_on_home_page(contact_information_from_edit_page[i])
+        assert contact_information_from_home_page[i].all_emails_from_home_page == merge_emails_like_on_home_page(
+            contact_information_from_edit_page[i])
 
 
 def clear(s):
