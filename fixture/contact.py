@@ -146,6 +146,24 @@ class ContactHelper:
                                                   all_emails_from_home_page=all_emails, all_phones_from_home_page=all_phones))
         return list(self.contact_cache)
 
+    def get_contacts_in_group(self, group_name):
+        if self.contact_cache is None:
+            wd = self.app.wd
+            self.open_contact_page()
+            self.contact_cache = []
+            Select(wd.find_element_by_name("group")).select_by_visible_text(group_name)
+            for contact in wd.find_elements_by_name("entry"):
+                cells = contact.find_elements_by_tag_name("td")
+                id = cells[0].find_element_by_name("selected[]").get_attribute("value")
+                lastname = cells[1].text
+                firstname = cells[2].text
+                address = cells[3].text
+                all_emails = cells[4].text
+                all_phones = cells[5].text
+                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, address=address, id=id,
+                                                  all_emails_from_home_page=all_emails, all_phones_from_home_page=all_phones))
+        return list(self.contact_cache)
+
     def open_contact_view_by_index(self, index):
         wd = self.app.wd
         self.app.open_home_page()
@@ -183,6 +201,14 @@ class ContactHelper:
         return Contact(home_telephone=home_telephone, mobile_telephone=mobile_telephone,
                        work_telephone=work_telephone, secondary_phone=secondary_phone)
 
+    def add_contact_to_group(self, index, group_name):
+        wd = self.app.wd
+        self.open_contact_page()
+        self.select_contact_by_index(index)
+        wd.find_element_by_name("to_group").click()
+        Select(wd.find_element_by_name("to_group")).select_by_visible_text(group_name)
+        wd.find_element_by_name("add").click()
+        wd.find_element_by_xpath("//div[@id='content']/div/i/a").click()
 
 
 
