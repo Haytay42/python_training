@@ -201,10 +201,10 @@ class ContactHelper:
         return Contact(home_telephone=home_telephone, mobile_telephone=mobile_telephone,
                        work_telephone=work_telephone, secondary_phone=secondary_phone)
 
-    def add_contact_to_group(self, index, group_name):
+    def add_contact_to_group(self, id, group_name):
         wd = self.app.wd
         self.open_contact_page()
-        self.select_contact_by_index(index)
+        self.select_contact_by_id(id)
         wd.find_element_by_name("to_group").click()
         Select(wd.find_element_by_name("to_group")).select_by_visible_text(group_name)
         wd.find_element_by_name("add").click()
@@ -217,6 +217,24 @@ class ContactHelper:
         self.select_contact_by_id(contacts_num)
         wd.find_element_by_name("remove").click()
         wd.find_element_by_xpath("//div[@id='content']/div/i/a").click()
+
+    def check_all_contacts_in_group(self, contacts, contacts_in_group):
+        list = []
+        contacts_in_group_list = []
+        for i in range(len(contacts_in_group)):
+            contacts_in_group_list.append(clear(contacts_in_group[i].id))
+        for i in range(len(contacts)):
+            if contacts[i].id not in contacts_in_group_list:
+                list.append(contacts[i].id)
+            else:
+                pass
+        return list
+
+
+def clear(s):
+    return re.sub("[() ,]", "", s)
+
+
 
 
 
