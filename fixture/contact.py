@@ -117,6 +117,24 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
+    def modify_contact_by_id(self, index, index_element, contact):
+        wd = self.app.wd
+        self.select_contact_by_id(index)
+        wd.find_element_by_xpath(f"(//img[@alt='Edit'])[{index_element + 1}]").click()
+        self.fill_contact(contact)
+        wd.find_element_by_xpath("//div[@id='content']/form/input[22]").click()
+        self.return_to_home_page()
+        self.contact_cache = None
+
+    def get_number_element_by_id(self, elements, id):
+        i = 0
+        for index_element in elements:
+            if index_element.id == id:
+                break
+            else:
+                i = i + 1
+        return i
+
     def select_contact_by_index_to_edit(self, index):
         self.open_contact_page()
         wd = self.app.wd
