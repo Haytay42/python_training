@@ -117,7 +117,7 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
-    def modify_contact_by_id(self, index_element, contact):
+    def modify_contact_by_element_index(self, index_element, contact):
         wd = self.app.wd
         wd.find_element_by_xpath(f"(//img[@alt='Edit'])[{index_element + 1}]").click()
         self.fill_contact(contact)
@@ -125,7 +125,7 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
-    def get_number_element_by_id(self, contacts, id):
+    def get_elem_index(self, contacts, id):
         i = 0
         for number_element in contacts:
             if number_element.id == id:
