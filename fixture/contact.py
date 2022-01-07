@@ -127,8 +127,8 @@ class ContactHelper:
 
     def get_elem_index(self, contacts, id):
         i = 0
-        for number_element in contacts:
-            if number_element.id == id:
+        for elem_index in contacts:
+            if elem_index.id == id:
                 break
             else:
                 i = i + 1
