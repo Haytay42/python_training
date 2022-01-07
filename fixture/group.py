@@ -51,10 +51,10 @@ class GroupHelper:
         self.return_to_groups_page()
         self.group_cache = None
 
-    def get_element_index(self, elements, id):
+    def get_element_index(self, groups, id):
         i = 0
-        for index_element in elements:
-            if index_element.id == id:
+        for elem_index in groups:
+            if elem_index .id == id:
                 break
             else:
                 i = i + 1
