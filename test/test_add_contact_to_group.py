@@ -44,6 +44,7 @@ def test_add_some_contact_to_group(app, db):
             assert contact_from_ui[i].id == clear(contact_from_db[i].id)
 
 
+
 def clear(s):
     return re.sub("[() ,]", "", s)
 
